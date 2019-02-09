@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Practical Machine Learning Course Project Report</h1>
+
+<p>
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har
+</p> 
+
+<p>
+Using special devices it is possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, the goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.
+</p>
+
+<p>
+Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. Participants were supervised by an experienced weight lifter to make sure the execution complied to the manner they were supposed to simulate. The exercises were performed by six male participants aged between 20-28 years, with little weight lifting experience. 
+
+Inspecting the training and test data we can see that there is a lot of missing datas (Nas). In pml-testing.csv are 160 variables and100 variables are allways Nas. In pml-training.csv 67 variables are mostly Nas.
+</p>
+
+<p>
+First of all I choosed the 60 variables wich are not Nas in pml-testing.csv. 
+I didn't use the following variables for classifying, because I think they are not related to the class.
+</p>
+
+<li>"X" "user_name"</li><li>"raw_timestamp_part_1" </li><li>"raw_timestamp_part_2"</li><li>
+  "cvtd_timestamp" </li><li>"new_window" </li><li>  "num_window" </li>
+<p>
+I used the all the remaining variables for the training.</p>
+"roll_belt"         
+ "pitch_belt"          "yaw_belt"             "total_accel_belt"    "gyros_belt_x"        
+ "gyros_belt_y"         "gyros_belt_z"        "accel_belt_x"        "accel_belt_y"        
+ "accel_belt_z"        "magnet_belt_x"     "magnet_belt_y"        "magnet_belt_z"       
+ "roll_arm"          "pitch_arm"           "yaw_arm"           "total_accel_arm"     
+"gyros_arm_x"       "gyros_arm_y"          "gyros_arm_z"          "accel_arm_x"         
+"accel_arm_y"         "accel_arm_z"          "magnet_arm_x"       "magnet_arm_y"        
+ "magnet_arm_z"   "roll_dumbbell"       "pitch_dumbbell"       "yaw_dumbbell"        
+ "total_accel_dumbbell" "gyros_dumbbell_x"     "gyros_dumbbell_y"     "gyros_dumbbell_z"    
+"accel_dumbbell_x"     "accel_dumbbell_y"     "accel_dumbbell_z"     "magnet_dumbbell_x"   
+ "magnet_dumbbell_y"    "magnet_dumbbell_z"    "roll_forearm"         "pitch_forearm"       
+ "yaw_forearm"          "total_accel_forearm"  "gyros_forearm_x"      "gyros_forearm_y"     
+ "gyros_forearm_z"      "accel_forearm_x"      "accel_forearm_y"      "accel_forearm_z"     
+"magnet_forearm_x"     "magnet_forearm_y"     "magnet_forearm_z" "classe"     
+
+<p>
+I divided the data into training set and test set. 75% of the data was part of the training set, and 25% was part of the test (validation set).</p>
+
+<p>
+First I tried to use a tree for classification, but the accuracy was only around 48%.</p>
+
+<p>
+Then I tried random forest with  number of trees of 10, and it performed well. The accouracy on test set was around 99%, so misclassification is around 1%.</p>
+</body>
+</html>

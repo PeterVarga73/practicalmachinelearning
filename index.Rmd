@@ -1,0 +1,90 @@
+---
+title: "Practical Machine Learning Course Project"
+author: "Peter Varga"
+date: '2019 február 11 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Using special devices it is possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, the goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.
+
+Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. Participants were supervised by an experienced weight lifter to make sure the execution complied to the manner they were supposed to simulate. The exercises were performed by six male participants aged between 20-28 years, with little weight lifting experience.
+
+The data for this project come from this source:
+
+Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
+<http://groupware.les.inf.puc-rio.br/har>
+
+
+Inspecting the training and test data we can see that there is a lot of missing datas (NAs). In pml-testing.csv are 160 variables and 100 variables are allways NAs. In pml-training.csv 67 variables are mostly NAs.
+
+First of all I choosed the 60 variables wich are not NAs in pml-testing.csv.
+
+I didn't use the following variables for classifying, because I think they are not related to the class:
+
+ * X
+ * user_name
+ * raw_timestamp_part_1
+ * raw_timestamp_part_2
+ * cvtd_timestamp
+ * new_window
+ * num_window
+
+I used the all the remaining variables for the training:
+      
+I divided the data into training set and test set. 75% of the data was part of the training set, and 25% was part of the test (validation set).
+
+First I tried to use a single decision tree for classification, but the accuracy was only around 48%.
+
+Then I tried random forest with  number of trees of 10, and it performed well. The accouracy on test set was around 99%, so misclassification is around 1%.
+
+```{r, message=FALSE, warning=FALSE}
+library(caret)
+```
+
+
+```{r}
+
+#downloading and loading data
+urltrain<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+urltest<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+if (!file.exists("data")) {dir.create("data")}
+
+download.file(urltrain, destfile = "./data/pml-training.csv")
+download.file(urltest, destfile = "./data/pml-testing.csv")
+
+data<-read.csv("./data/pml-training.csv")
+test<-read.csv("./data/pml-testing.csv")
+
+set.seed(1)
+
+#75% of data is trainig set, 25% is test (validation) set
+intrain<-createDataPartition(y=data$classe,p=0.75,list=FALSE)
+training<-data[intrain,]
+testing<-data[-intrain,]
+
+#choosing the variables which are not NAs is test set
+z<-is.na(test)
+training2<-training[,which(colSums(z)==0)]
+
+# variables 1:7 are not in causing relation with class
+training3<-training2[,8:60]
+
+#training random forest model
+modRf2<-train(classe~.,method="rf",data=training3,ntree=10)
+
+confusionMatrix(predict(modRf2,newdata = testing),testing$classe)
+
+```
+
+
+
+```{r}
+rm(list = ls())
+```
+
+
